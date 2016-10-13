@@ -81,22 +81,28 @@ def show_shopping_cart():
     melon_list = []
     grand_total = 0
 
-    # melon is a key in the "cart" dictionary. It's value is the order quantity
-    for melon_id in session["cart"]:
-        # get melon information using get_by_id using melon, a melon_id
-        melon_order = melons.get_by_id(melon_id)
-        melon_order.quantity = session["cart"][melon_id]
-        melon_order.total = melon_order.quantity * melon_order.price
+    if "cart" in session:
+        # melon is a key in the "cart" dictionary. It's value is the order quantity
+        for melon_id in session["cart"]:
+            # get melon information using get_by_id using melon, a melon_id
+            melon_order = melons.get_by_id(melon_id)
+            melon_order.quantity = session["cart"][melon_id]
+            melon_order.total = melon_order.quantity * melon_order.price
 
-        melon_list.append(melon_order)
+            melon_list.append(melon_order)
 
-        grand_total += melon_order.total
+            grand_total += melon_order.total
 
-    print melon_list
+        print melon_list
 
-    return render_template("cart.html", 
+        return render_template("cart.html", 
                            grand_total=grand_total, 
                            melon_list=melon_list)
+        
+    else:
+        return render_template("cart.html", 
+                           grand_total=0, 
+                           melon_list=[])
 
 
 @app.route("/add_to_cart/<melon_id>")
